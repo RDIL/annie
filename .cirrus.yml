@@ -45,11 +45,11 @@ server_headless_tests_task:
     brew install python
     brew tap homebrew/cask
     brew cask install phantomjs
-    pip3 install --user .
   python_packages_cache:
     folder: /Users/anka/Library/Python/3.7/lib/python/site-packages
-    fingerprint_script: cat requirements.txt
+    fingerprint_script: cat requirements.txt && cat .cirrus.yml
     populate_script: pip3 install --upgrade --user -r requirements.txt
+  prep_script: pip3 install --user .
   flask_background_script: python3 "import server"
   script: python3 -m xmlrunner tests
   always:
