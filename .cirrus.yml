@@ -43,10 +43,12 @@ server_headless_tests_task:
     image: mojave-xcode-10.2
   install_dependencies_script: |
     brew install python
-    python3 -m pip install --upgrade --user -r requirements.txt
-    python3 -m site --user-site
     brew tap homebrew/cask
     brew cask install phantomjs
+  python_packages_cache:
+    folder: /Users/anka/Library/Python/3.7/lib/python/site-packages
+    fingerprint_script: cat requirements.txt
+    populate_script: pip3 install --upgrade --user -r requirements.txt
   script: python3 -m xmlrunner tests
   unittest_results_artifacts:
     path: ./*.xml
