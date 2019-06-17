@@ -50,6 +50,7 @@ server_headless_tests_task:
     fingerprint_script: cat requirements.txt
     populate_script: pip3 install --upgrade --user -r requirements.txt
   script: python3 -m xmlrunner tests
-  unittest_results_artifacts:
-    path: ./*.xml
-    format: junit
+  always:
+    unittest_results_artifacts:
+      path: ./*.xml
+      format: junit
