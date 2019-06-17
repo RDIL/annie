@@ -50,7 +50,7 @@ server_headless_tests_task:
     folder: /Users/anka/Library/Python/3.7/lib/python/site-packages
     fingerprint_script: cat requirements.txt
     populate_script: pip3 install --upgrade --user -r requirements.txt
-  flask_background_script: python3 -m server/main.py
+  flask_background_script: python3 "import server"
   script: python3 -m xmlrunner tests
   always:
     unittest_results_artifacts:
