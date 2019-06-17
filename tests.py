@@ -7,7 +7,7 @@ class ServerTests(unittest.TestCase):
         self.driver = webdriver.PhantomJS()
 
     def test_status(self):
-        self.driver.get("127.0.0.1:5000")
+        self.driver.get("127.0.0.1:2000")
         self.assertIn("analytics server online", self.driver.page_source)
 
     def tearDown(self):
