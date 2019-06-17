@@ -5,7 +5,7 @@ from subprocess import Popen
 
 class ServerTests(unittest.TestCase):
     def setUp(self):
-        self.driver = webdriver.Firefox()
+        self.driver = webdriver.PhantomJS()
         self.flask_server = Popen(["python3", "-m", "flask", "run"])
 
     def test_status(self):
