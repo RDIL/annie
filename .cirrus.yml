@@ -37,3 +37,15 @@ server_beta_task:
   build_script: python3 setup.py sdist
   download_artifacts:
     path: dist/**
+
+server_headless_tests_task:
+  osx_instance:
+    image: mojave-xcode-10.2
+  install_dependencies_script: |
+    brew install python
+    python3 -m pip install --upgrade --user -r requirements.txt
+    brew install phantomjs
+  script: python3 -m xmlrunner tests
+  unittest_results_artifacts:
+    path: ./*.xml
+    format: junit
