@@ -230,5 +230,5 @@ def internal_server_exception(error):
     ), 500
 
 
-if __name__ == "__main__" and os.getenv("CIRRUS_CI") != None:
+if __name__ == "__main__" or os.getenv("CIRRUS_CI") != None:
     app.run(host='127.0.0.1', port=opts.dev_port)
