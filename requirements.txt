@@ -1,2 +1,4 @@
 Flask==1.0.3
 lcbools>=1.0.2
+flask-talisman==0.7.0
+Flask-SeaSurf==0.2.2
