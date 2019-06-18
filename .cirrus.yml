@@ -8,8 +8,7 @@ pipe:
       script: mkdocs build
       docs_build_preview_artifacts:
         path: site/**
-    - name: Deploy
-      image: squidfunk/mkdocs-material:4.4.0
+    - image: squidfunk/mkdocs-material:4.4.0
       install_script: pip install --upgrade pymdown-extensions
       skip: $CIRRUS_BRANCH != 'master'
       deploy_script: |
