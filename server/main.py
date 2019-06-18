@@ -25,6 +25,8 @@ FROM THE ANNIE TEAM.
 
 from datetime import datetime
 from flask import Flask, render_template, request, Response
+from flask_talisman import Talisman
+from flask_seasurf import SeaSurf
 from lcbools import true, false
 import config as opts
 import random
@@ -34,6 +36,8 @@ import sys
 import string
 
 app = Flask(__name__)
+Talisman(app)
+SeaSurf(app)
 
 if opts.verbose:
     app.logger.setLevel(logging.DEBUG)
