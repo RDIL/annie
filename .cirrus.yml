@@ -3,8 +3,7 @@ pipe:
   env:
     DEPLOY_TOKEN: ENCRYPTED[8b719b51d75561d87baa92c15925d77ddce4a78bd31b1b87b48f1ca0931bd7b968357edf401e0ecbc2a0e8c49ea8cbff]
   steps:
-    - name: Build
-      image: squidfunk/mkdocs-material:4.4.0
+    - image: squidfunk/mkdocs-material:4.4.0
       install_script: pip install --upgrade pymdown-extensions
       script: mkdocs build
       docs_build_preview_artifacts:
