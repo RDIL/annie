@@ -76,7 +76,7 @@ URLs = \
 
 setuptools.setup(
     name='annie-server',
-    version='1.2.1',
+    version='1.4.0',
     author="Annie Team",
     description="Annie Server",
     license="See https://github.com/annieapp/annie/blob/master/LICENSE",
@@ -87,7 +87,9 @@ setuptools.setup(
     zip_safe=False,
     install_requires=[
         "Flask==1.0.3",
-        "lcbools>=1.0.2"
+        "lcbools>=1.0.2",
+        "flask-talisman==0.7.0",
+        "Flask-SeaSurf==0.2.2"
     ],
     classifiers=CLASSIFIERS,
     project_urls=URLs,
