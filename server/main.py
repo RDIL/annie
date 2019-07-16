@@ -28,29 +28,74 @@ from flask import Flask, render_template, request, Response
 from flask_talisman import Talisman
 from flask_seasurf import SeaSurf
 from lcbools import true, false
-import config as opts
 import random
 import json
 import logging
 import sys
+import os
 import string
 
 app = Flask(__name__)
 Talisman(app)
 SeaSurf(app)
 
-if opts.verbose:
+if os.getenv("CI") == None:
     app.logger.setLevel(logging.DEBUG)
     app.logger.addHandler(logging.StreamHandler(sys.stdout))
 app.logger.addHandler(logging.FileHandler(filename='annie_backend.log', encoding='utf-8', mode='w'))
 
 
+def public_key_error():
+    """
+    Method to get common response for public key errors.
+
+    :return: the flask.Response object
+    :rtype flask.Response:
+    """
+    return Response(
+        json.dumps({
+            "result": {
+                "fail": true,
+                "message": "Invalid or missing public key"
+            }
+        }),
+        mimetype='application/json'
+    )
+
+
+def private_key_error():
+    """
+    Method to get common response for private key errors.
+
+    :return: the flask.Response object
+    :rtype flask.Response:
+    """
+    return Response(
+        json.dumps({
+            "result": {
+                "fail": true,
+                "message": "Invalid or missing private key"
+            }
+        }),
+        mimetype='application/json'
+    )
+
+
 def genkey():
+    """
+    Generate new random API key
+
+    :return: key
+    :rtype str:
+    """
     return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(15))
 
 
 @app.route("/", methods=["GET"])
 def base():
+    """
+    Basic status endpoint.
+    """
     return Response(
         json.dumps({
             "status": "analytics server online"
@@ -61,6 +106,9 @@ def base():
 
 @app.route("/robots.txt", methods=["GET"])
 def disallow_search_engine_crawling():
+    """
+    Prevents common search engines from crawling the server.
+    """
     return Response(
         render_template("robots.txt"),
         mimetype="text/plain"
@@ -69,17 +117,9 @@ def disallow_search_engine_crawling():
 
 @app.route("/keys/new", methods=["GET", "POST"])
 def new_key():
-    if opts.manual_keygen:
-        return Response(
-            json.dumps({
-                "result": {
-                    "fail": true
-                },
-                "message": "the owner of this Annie server has disabled easy key signups in the config."
-            }),
-            mimetype='application/json'
-        )
-
+    """
+    Get a new key.
+    """
     with open('stats.info') as f:
         data = json.load(f)
 
@@ -106,6 +146,12 @@ def new_key():
 
 @app.route("/keys/delete", methods=["GET", "POST"])
 def delkey():
+    """
+    Delete a key
+
+    :param key: public key
+    :param private: private key
+    """
     with open("stats.info", "r") as f:
         data = json.load(f)
     thekey = request.args.get("key", type=str)
@@ -125,29 +171,18 @@ def delkey():
                 mimetype='application/json'
             )
         else:
-            return Response(
-                json.dumps({
-                    "result": {
-                        "fail": true
-                    },
-                    "message": "Invalid private key"
-                }),
-                mimetype='application/json'
-            )
+            return private_key_error()
     except KeyError:
-        return Response(
-            json.dumps({
-                "result": {
-                    "fail": true
-                },
-                "message": "Public key not valid"
-            }),
-            mimetype='application/json'
-        )
+        return public_key_error()
 
 
 @app.route("/connect", methods=["GET", "POST"])
 def connect():
+    """
+    Log a connection to a keyset.
+
+    :param key: the public key
+    """
     try:
         with open('stats.info') as f:
             data = json.load(f)
@@ -157,15 +192,7 @@ def connect():
         with open('stats.info', 'w') as w:
             json.dump(data, w)
     except:
-        return Response(
-            json.dumps({
-                "result": {
-                    "fail": true
-                },
-                "message": "Invalid or missing API key"
-            }),
-            mimetype='application/json'
-        )
+        return public_key_error()
 
     return Response(
         json.dumps({
@@ -179,6 +206,12 @@ def connect():
 
 @app.route("/stats.json", methods=["GET", "POST"])
 def stats():
+    """
+    Stats as a JSON endpoint.
+
+    :param key: public key
+    :param private: private key
+    """
     try:
         with open('stats.info') as f:
             data = json.load(f)
@@ -195,29 +228,16 @@ def stats():
                 }),
                 mimetype='application/json'
             )
-        return Response(
-            json.dumps({
-                "result": {
-                    "fail": true,
-                    "message": "Invalid or missing private key"
-                }
-            }),
-            mimetype='application/json'
-        )
+        return private_key_error()
     except:
-        return Response(
-            json.dumps({
-                "result": {
-                    "fail": true,
-                    "message": "Invalid or missing public key"
-                }
-            }),
-            mimetype='application/json'
-        )
+        return public_key_error()
 
 
 @app.errorhandler(403)
 def access_denied(error):
+    """
+    Called upon 403 error.
+    """
     return render_template(
         "error.html",
         code="403",
@@ -227,6 +247,9 @@ def access_denied(error):
 
 @app.errorhandler(404)
 def page_not_found(error):
+    """
+    Called upon 404 error.
+    """
     return render_template(
         "error.html",
         code="404",
@@ -236,6 +259,9 @@ def page_not_found(error):
 
 @app.errorhandler(500)
 def internal_server_exception(error):
+    """
+    Called upon 500 error.
+    """
     return render_template(
         "error.html",
         code="500",
@@ -244,4 +270,4 @@ def internal_server_exception(error):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=opts.dev_port)
+    app.run(host='0.0.0.0', port=2000)

@@ -78,11 +78,11 @@ setuptools.setup(
     name='annie-server',
     version='1.4.0',
     author="Annie Team",
+    author_email="support@rdil.rocks",
     description="Annie Server",
     license="See https://github.com/annieapp/annie/blob/master/LICENSE",
     url="https://annieapp.co",
-    author_email="me@rdil.rocks",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(exclude=["docs", "frontend"]),
     include_package_data=True,
     zip_safe=False,
     install_requires=[
@@ -93,6 +93,8 @@ setuptools.setup(
     ],
     classifiers=CLASSIFIERS,
     project_urls=URLs,
+    download_url="https://github.com/annieapp/annie/releases",
+    keywords=["annie", "server", "analytics", "monitoring"],
     long_description="See https://annieapp.co",
     long_description_content_type="text/markdown"
 )
